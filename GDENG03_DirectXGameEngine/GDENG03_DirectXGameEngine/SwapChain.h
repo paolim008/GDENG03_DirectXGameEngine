@@ -1,16 +1,16 @@
 #pragma once
 #include <d3d11.h>
-
 class DeviceContext;
 class SwapChain
 {
 public:
 	SwapChain();
-
+	//Initialize Swap Chain for a window
 	bool init(HWND hwnd, UINT width, UINT height);
+	//Release the Swap Chain
 	bool release();
-	bool present(bool vsync);
 
+	bool present(bool vsync);
 	~SwapChain();
 
 private:
@@ -19,5 +19,5 @@ private:
 
 private:
 	friend class DeviceContext;
-};
 
+};

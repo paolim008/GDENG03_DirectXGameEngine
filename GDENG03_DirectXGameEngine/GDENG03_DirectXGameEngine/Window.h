@@ -1,21 +1,23 @@
 #pragma once
-#pragma comment(lib,"d3d11.lib") 
-#include <Windows.h>
+#include"Windows.h"
+
 
 class Window
 {
 public:
 	Window();
+	//Initialize the Window
 	bool init();
 	bool broadcast();
+
+	//Release the Window
 	bool release();
-	bool isRun();
+	bool isRunning();
 
 	RECT getClientWindowRect();
 	void setHWND(HWND hwnd);
 
-
-	//EVENTS
+	//Event Methods
 	virtual void onCreate();
 	virtual void onUpdate();
 	virtual void onDestroy();
@@ -24,6 +26,5 @@ public:
 
 protected:
 	HWND m_hwnd;
-	bool m_is_run;
+	bool m_is_running;
 };
-

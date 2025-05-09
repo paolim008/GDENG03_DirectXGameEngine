@@ -5,7 +5,6 @@ SwapChain::SwapChain()
 {
 }
 
-
 bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 {
 	ID3D11Device* device = GraphicsEngine::get()->m_d3d_device;
@@ -22,8 +21,9 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	desc.OutputWindow = hwnd;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
-	desc.Windowed = TRUE;
+	desc.Windowed = true;
 
+	//Create Swap Chain for the window hwnd
 	HRESULT hr = GraphicsEngine::get()->m_dxgi_factory->CreateSwapChain(device, &desc, &m_swap_chain);
 
 	if (FAILED(hr))
@@ -47,13 +47,8 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 		return false;
 	}
 
-
-
 	return true;
-
 }
-
-
 
 bool SwapChain::release()
 {
