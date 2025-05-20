@@ -32,11 +32,28 @@ void AppWindow::onCreate()
 
 	vertex list[] =
 	{
-		//X - Y - Z
-		{-0.5f,-0.5f,0.0f,	1,0,0},   // POS1
-		{-0.5f,0.5f,0.0f,	0,1,0},   // POS2
-		{ 0.5f,-0.5f,0.0f,	0,0,1},   // POS3
-		{0.5f,0.5f,0.0f,	1,1,0},   // POS4		
+		// #pragma region RAINBOW RECTANGLE
+		// //X - Y - Z
+		// {-0.5f,-0.5f,0.0f,	1,0,0},   // POS1
+		// {-0.5f,0.5f,0.0f,	0,1,0},   // POS2
+		// { 0.5f,-0.5f,0.0f,	0,0,1},   // POS3
+		// {0.5f,0.5f,0.0f,	1,1,0},   // POS4
+		// #pragma endregion
+
+		// #pragma region RAINBOW TRIANGLE
+		// //X - Y - Z
+		// {-0.5f,-0.5f,0.0f,	1,0,0},   // POS1
+		// {0.0f,0.5f,0.0f,	0,1,0},   // POS2
+		// { 0.5f,-0.5f,0.0f,	0,0,1},   // POS3
+		// #pragma endregion
+
+		 #pragma region Green RECTANGLE
+		 //X - Y - Z
+		 {-0.5f,-0.5f,0.0f,	0,1,0},   // POS1
+		 {-0.5f,0.5f,0.0f,	0,1,0},   // POS2
+		 { 0.5f,-0.5f,0.0f,	0,1,0},   // POS3
+		 {0.5f,0.5f,0.0f,	0,1,0},   // POS4
+		 #pragma endregion	
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
