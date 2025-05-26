@@ -52,6 +52,10 @@
     <ClCompile Include="PixelShader.cpp">
       <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
     </ClCompile>
+    <ClCompile Include="Gameobject.cpp" />
+    <ClCompile Include="Quad.cpp" />
+    <ClCompile Include="Vec3.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h">
@@ -75,6 +79,13 @@
     </ClInclude>
     <ClInclude Include="PixelShader.h">
       <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameobject.h" />
+    <ClInclude Include="Quad.h" />
+    <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="math.h">
+      <Filter>GameEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
