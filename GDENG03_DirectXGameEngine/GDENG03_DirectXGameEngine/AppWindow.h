@@ -28,4 +28,10 @@ private:
 
 private:
 	std::vector<Gameobject*> gameobjectList;
+
+private:
+	void InitRenderStates();
+
+private:
+	ID3D11RasterizerState* m_wireframe_RS;
 };

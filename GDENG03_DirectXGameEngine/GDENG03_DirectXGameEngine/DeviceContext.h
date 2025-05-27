@@ -18,7 +18,7 @@ public:
 
 	void setVertexShader(VertexShader* vertex_shader);
 	void setPixelShader(PixelShader* pixel_shader);
-
+	void setRSState(ID3D11RasterizerState* rasterizer_state);
 
 	bool release();
 	~DeviceContext();

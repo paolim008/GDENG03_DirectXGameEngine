@@ -40,6 +40,9 @@ public:
 private:
 	DeviceContext* m_imm_device_context;
 
+public:
+	ID3D11Device* get_device();
+
 private:
 	ID3D11Device* m_d3d_device;
 	D3D_FEATURE_LEVEL m_feature_level;

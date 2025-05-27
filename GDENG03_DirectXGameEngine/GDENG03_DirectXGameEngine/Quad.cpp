@@ -2,7 +2,6 @@
 
 #include "DeviceContext.h"
 #include "GraphicsEngine.h"
-#include "math.h"
 
 //Initialize Quad with a list of vertices
 Quad::Quad(vertex* vertexList)

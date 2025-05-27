@@ -59,6 +59,11 @@ void DeviceContext::setPixelShader(PixelShader* pixel_shader)
 
 }
 
+void DeviceContext::setRSState(ID3D11RasterizerState* rasterizer_state)
+{
+	m_device_context->RSSetState(rasterizer_state);
+}
+
 
 bool DeviceContext::release()
 {
