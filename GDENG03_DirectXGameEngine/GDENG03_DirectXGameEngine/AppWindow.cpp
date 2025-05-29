@@ -1,7 +1,6 @@
-
 #include "AppWindow.h"
+#include <iostream>
 #include <Windows.h>
-
 
 struct vec3
 {
@@ -36,6 +35,10 @@ AppWindow::~AppWindow()
 void AppWindow::onCreate()
 {
 	Window::onCreate();
+
+	EngineTime::initialize();
+	EngineTime::setTimeScale(1.f);
+
 	GraphicsEngine::get()->init();
 	m_swap_chain = GraphicsEngine::get()->createSwapChain();
 
@@ -46,9 +49,9 @@ void AppWindow::onCreate()
 	{
 		//X - Y - Z
 		{-0.5f,-0.5f,0.0f,    -0.32f,-0.11f,0.0f,   0,0,0,  0,1,0 }, // POS1
-		{-0.5f,0.5f,0.0f,     -0.11f,0.78f,0.0f,    1,1,0,  0,1,1 }, // POS2
+		{-0.5f,0.5f,0.0f,     -0.5f,0.4f,0.0f,    1,1,0,  0,1,1 }, // POS2
 		{ 0.5f,-0.5f,0.0f,     0.75f,-0.73f,0.0f,   0,0,1,  1,0,0 },// POS2
-		{ 0.5f,0.5f,0.0f,      0.88f,0.77f,0.0f,    1,1,1,  0,0,1 }
+		{ 0.5f,0.5f,0.0f,      -0.5f,-0.5f,0.0f,    1,1,1,  0,0,1 }
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
@@ -73,11 +76,14 @@ void AppWindow::onCreate()
 
 	m_cb = GraphicsEngine::get()->createConstantBuffer();
 	m_cb->load(&cc, sizeof(constant));
-
 }
 
 void AppWindow::onUpdate()
 {
+	EngineTime::LogFrameStart();
+
+	InterpolateTimeScale();
+
 	Window::onUpdate();
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
@@ -86,13 +92,8 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	unsigned long new_time = 0;
-	if (m_old_time)
-		new_time = ::GetTickCount() - m_old_time;
-	m_delta_time = new_time / 1000.0f;
-	m_old_time = ::GetTickCount();
-
-	m_angle += 1.57f * m_delta_time;
+	//ENGINE DELTA TIME
+	m_angle += 50 * (EngineTime::getDeltaTime());
 	constant cc;
 	cc.m_angle = m_angle;
 
@@ -112,6 +113,11 @@ void AppWindow::onUpdate()
 	// FINALLY DRAW THE TRIANGLE
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vb->getSizeVertexList(), 0);
 	m_swap_chain->present(true);
+
+	EngineTime::LogFrameEnd();
+
+
+	//std::cout << EngineTime::getDeltaTime() << std::endl;
 }
 
 void AppWindow::onDestroy()
@@ -122,4 +128,26 @@ void AppWindow::onDestroy()
 	m_vs->release();
 	m_ps->release();
 	GraphicsEngine::get()->release();
+}
+
+void AppWindow::InterpolateTimeScale()
+{
+	if (isIncreasing)
+	{
+		currentTimeScale += EngineTime::getUnscaledDeltaTime();
+		if (currentTimeScale > 2)
+		{
+			isIncreasing = false;
+		}
+	}
+	else
+	{
+		currentTimeScale -= EngineTime::getUnscaledDeltaTime();
+		if (currentTimeScale < 0.1)
+		{
+			isIncreasing = true;
+		}
+	}
+	cout << currentTimeScale << endl;
+	EngineTime::setTimeScale(currentTimeScale);
 }
