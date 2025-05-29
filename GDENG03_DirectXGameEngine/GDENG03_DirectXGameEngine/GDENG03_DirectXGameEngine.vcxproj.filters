@@ -25,6 +25,9 @@
     <Filter Include="GameEngine\GraphicsEngine\VertexShader">
       <UniqueIdentifier>{a483cb35-dd1a-49aa-bcd6-ef394ca09fc4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\RasterizerRenderState">
+      <UniqueIdentifier>{15ff1989-cb36-48c3-8138-f68e02b203f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

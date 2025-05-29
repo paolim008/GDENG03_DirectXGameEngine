@@ -3,6 +3,7 @@
 #include "Quad.h"
 #include <d3d11.h>
 
+
 AppWindow::AppWindow()
 {
 }
@@ -10,9 +11,9 @@ AppWindow::AppWindow()
 
 AppWindow::~AppWindow()
 {
-	if (m_wireframe_RS)
-		m_wireframe_RS->Release();
-	m_wireframe_RS = 0;
+	 if (m_wireframe_RS)
+	 	m_wireframe_RS->Release();
+	 m_wireframe_RS = 0;
 }
 
 void AppWindow::onCreate()
@@ -24,6 +25,7 @@ void AppWindow::onCreate()
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
+	//Initialize the wireframe Rasterizer State
 	InitRenderStates();
 
 #pragma region Instantiate and Add Quads to Gameobject List
@@ -40,18 +42,7 @@ void AppWindow::onCreate()
 		new Vertex(-0.5f, 0.5f, 0.0f, 1, 0, 1),
 		new Vertex(-0.5f, -0.25f, 0.0f, 0, 0, 0)
 	));
-	// gameobjectList.push_back(new Quad(
-	// 	new Vertex(0.75f, 0.75f, 0.0f, 0, 0, 1),
-	// 	new Vertex(0.75f, 0.25f, 0.0f, 0, 1, 1),
-	// 	new Vertex(0.25f, 0.75f, 0.0f, 0, 0, 1),
-	// 	new Vertex(0.25f, 0.25f, 0.0f, 0, 0, 0)
-	// ));
-	// gameobjectList.push_back(new Quad(
-	// 	new Vertex(0.25f, -0.75f, 0.0f, 0, 0, 1),
-	// 	new Vertex(0.25f, -0.25f, 0.0f, 1, 1, 0),
-	// 	new Vertex(0.75f, -0.75f, 0.0f, 0, 0, 0),
-	// 	new Vertex(0.75f, -0.25f, 0.0f, 1, 1, 0)
-	// ));
+
 #pragma endregion
 
 }
@@ -77,6 +68,8 @@ void AppWindow::onUpdate()
 		}
 	}
 #pragma endregion
+
+	//Set Rasterizer State to wireframe
 	GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);
 
 	m_swap_chain->present(true);

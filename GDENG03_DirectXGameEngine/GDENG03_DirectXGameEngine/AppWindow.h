@@ -11,7 +11,6 @@
 #include "PixelShader.h"
 
 
-
 class AppWindow : public Window
 {
 public:
@@ -25,13 +24,12 @@ public:
 
 private:
 	SwapChain* m_swap_chain;
-
 private:
 	std::vector<Gameobject*> gameobjectList;
 
 private:
 	void InitRenderStates();
 
-private:
+public:
 	ID3D11RasterizerState* m_wireframe_RS;
 };
