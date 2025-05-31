@@ -52,7 +52,7 @@ void AppWindow::updateQuadPosition()
 	// temp.setScale(Vector3D::lerp(Vector3D(.5,.5,0), Vector3D(1,1,0), (sin(m_delta_scale)+1.0f)/2.0f));
 	// cc.m_world *= temp;
 
-	cc.m_world.setScale(Vector3D(.5, .5, .5));
+	cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
 
 	temp.setIdentity();
 	temp.setRotationZ(0.0f);
@@ -233,6 +233,16 @@ void AppWindow::onDestroy()
 	GraphicsEngine::get()->release();
 }
 
+void AppWindow::onFocus()
+{
+	InputSystem::get()->addListener(this);
+}
+
+void AppWindow::onKillFocus()
+{
+	InputSystem::get()->removeListener(this);
+}
+
 void AppWindow::InterpolateTimeScale()
 {
 	if (isIncreasing)
@@ -290,4 +300,32 @@ void AppWindow::onKeyDown(int key)
 
 void AppWindow::onKeyUp(int key)
 {
+}
+
+void AppWindow::onMouseMove(const Point& delta_mouse_pos)
+{
+	float engineDeltaTime = EngineTime::getDeltaTime();
+	m_rot_x -= delta_mouse_pos.m_y * engineDeltaTime;
+	m_rot_y -= delta_mouse_pos.m_x * engineDeltaTime;
+}
+
+void AppWindow::onLeftMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 0.5f;
+}
+
+void AppWindow::onRightMouseDown(const Point& mouse_pos)
+{
+	m_scale_cube = 2.f;
+}
+
+void AppWindow::onLeftMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.f;
+}
+
+void AppWindow::onRightMouseUp(const Point& mouse_pos)
+{
+	m_scale_cube = 1.f;
+
 }

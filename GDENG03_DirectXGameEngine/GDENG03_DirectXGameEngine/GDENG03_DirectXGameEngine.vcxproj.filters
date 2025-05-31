@@ -31,6 +31,9 @@
     <Filter Include="GameEngine\InputSystem">
       <UniqueIdentifier>{449ec4cc-fd48-4b31-911d-81173b0e73fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Math">
+      <UniqueIdentifier>{778ea0fc-cdab-4e43-9fe4-dceaae8c7668}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,8 +92,6 @@
       <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="Matrix4x4.h" />
-    <ClInclude Include="Vector3D.h" />
     <ClInclude Include="InputSystem.h">
       <Filter>GameEngine\InputSystem</Filter>
     </ClInclude>
@@ -98,6 +99,15 @@
     <ClInclude Include="EngineTime.h" />
     <ClInclude Include="InputListener.h">
       <Filter>GameEngine\InputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3D.h">
+      <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>GameEngine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
