@@ -158,6 +158,10 @@ void GraphicsEngine::releaseCompiledShader()
 	if (m_blob)m_blob->Release();
 }
 
+ID3D11Device* GraphicsEngine::get_device()
+{
+	return this->m_d3d_device;
+}
 
 
 GraphicsEngine* GraphicsEngine::get()

@@ -32,6 +32,14 @@ private:
 
 	float m_angle = 0;
 
+
+private: 
+	void InitRenderStates();
+	bool useWireframe = true;
+
+public:
+	ID3D11RasterizerState* m_wireframe_RS;
+
 	//Animation Oscillator
 private:
 	double currentTimeScale = 1.0f;

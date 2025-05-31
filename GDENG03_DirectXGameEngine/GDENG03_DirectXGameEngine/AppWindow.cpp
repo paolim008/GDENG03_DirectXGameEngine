@@ -45,6 +45,8 @@ void AppWindow::onCreate()
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
+	InitRenderStates();
+
 	vertex list[] =
 	{
 		//X - Y - Z
@@ -116,7 +118,12 @@ void AppWindow::onUpdate()
 
 	EngineTime::LogFrameEnd();
 
-
+	if (useWireframe)
+	{
+		//Set Rasterizer State to wireframe
+		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);		
+	}
+		
 	//std::cout << EngineTime::getDeltaTime() << std::endl;
 }
 
@@ -150,4 +157,16 @@ void AppWindow::InterpolateTimeScale()
 	}
 	cout << currentTimeScale << endl;
 	EngineTime::setTimeScale(currentTimeScale);
+}
+
+
+void AppWindow::InitRenderStates()
+{
+	D3D11_RASTERIZER_DESC wfd;
+	ZeroMemory(&wfd, sizeof(D3D11_RASTERIZER_DESC));
+	wfd.FillMode = D3D11_FILL_WIREFRAME;
+	wfd.CullMode = D3D11_CULL_BACK;
+	wfd.DepthClipEnable = true;
+
+	GraphicsEngine::get()->get_device()->CreateRasterizerState(&wfd, &m_wireframe_RS);
 }
