@@ -32,10 +32,9 @@ private:
 
 	float m_angle = 0;
 
-
 private: 
 	void InitRenderStates();
-	bool useWireframe = true;
+	bool useWireframe = false;
 
 public:
 	ID3D11RasterizerState* m_wireframe_RS;
