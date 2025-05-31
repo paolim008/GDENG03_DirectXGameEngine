@@ -1,15 +1,13 @@
 #pragma once
-#include <vector>
-
 #include "Window.h"
 #include "GraphicsEngine.h"
+#include "EngineTime.h"
 #include "SwapChain.h"
 #include "DeviceContext.h"
-#include "Gameobject.h"
 #include "VertexBuffer.h"
+#include "ConstantBuffer.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
-
 
 class AppWindow : public Window
 {
@@ -23,13 +21,27 @@ public:
 	virtual void onDestroy() override;
 
 private:
-	SwapChain* m_swap_chain;
-private:
-	std::vector<Gameobject*> gameobjectList;
+	void InterpolateTimeScale();
 
 private:
+	SwapChain* m_swap_chain;
+	VertexBuffer* m_vb;
+	VertexShader* m_vs;
+	PixelShader* m_ps;
+	ConstantBuffer* m_cb;
+
+	float m_angle = 0;
+
+
+private: 
 	void InitRenderStates();
+	bool useWireframe = true;
 
 public:
 	ID3D11RasterizerState* m_wireframe_RS;
+
+	//Animation Oscillator
+private:
+	double currentTimeScale = 1.0f;
+	bool isIncreasing = true;
 };

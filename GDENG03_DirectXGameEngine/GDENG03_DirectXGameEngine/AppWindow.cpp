@@ -1,7 +1,26 @@
 #include "AppWindow.h"
-#include "Vertex.h"
-#include "Quad.h"
-#include <d3d11.h>
+#include <iostream>
+#include <Windows.h>
+
+struct vec3
+{
+	float x, y, z;
+};
+
+struct vertex
+{
+	vec3 position;
+	vec3 position1;
+	vec3 color;
+	vec3 color1;
+};
+
+
+__declspec(align(16))
+struct constant
+{
+	float m_angle;
+};
 
 
 AppWindow::AppWindow()
@@ -11,44 +30,62 @@ AppWindow::AppWindow()
 
 AppWindow::~AppWindow()
 {
-	 if (m_wireframe_RS)
-	 	m_wireframe_RS->Release();
-	 m_wireframe_RS = 0;
 }
 
 void AppWindow::onCreate()
 {
 	Window::onCreate();
+
+	EngineTime::initialize();
+	EngineTime::setTimeScale(1.f);
+
 	GraphicsEngine::get()->init();
 	m_swap_chain = GraphicsEngine::get()->createSwapChain();
 
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
-	//Initialize the wireframe Rasterizer State
 	InitRenderStates();
 
-#pragma region Instantiate and Add Quads to Gameobject List
-	gameobjectList.push_back(new Quad(
-		new Vertex(0.5f, 0.25f, 0.0f, 1, 0, 0), //TR
-		new Vertex(0.5f, -0.5f, 0.0f, 0, 1, 0), //BR
-		new Vertex(-0.25f, 0.25f, 0.0f, 0, 1, 0), //TL
-		new Vertex(-0.25f, -0.5f, 0.0f, 0, 0, 1) //BL
-	));
-	
-	gameobjectList.push_back(new Quad(
-		new Vertex(0.25f, 0.5f, 0.0f, 0, 0, 0),
-		new Vertex(0.25f, -0.25f, 0.0f, 1, 0, 0),
-		new Vertex(-0.5f, 0.5f, 0.0f, 1, 0, 1),
-		new Vertex(-0.5f, -0.25f, 0.0f, 0, 0, 0)
-	));
+	vertex list[] =
+	{
+		//X - Y - Z
+		{-0.5f,-0.5f,0.0f,    -0.32f,-0.11f,0.0f,   0,0,0,  0,1,0 }, // POS1
+		{-0.5f,0.5f,0.0f,     -0.5f,0.4f,0.0f,    1,1,0,  0,1,1 }, // POS2
+		{ 0.5f,-0.5f,0.0f,     0.75f,-0.73f,0.0f,   0,0,1,  1,0,0 },// POS2
+		{ 0.5f,0.5f,0.0f,      -0.5f,-0.5f,0.0f,    1,1,1,  0,0,1 }
+	};
 
-#pragma endregion
+	m_vb = GraphicsEngine::get()->createVertexBuffer();
+	UINT size_list = ARRAYSIZE(list);
 
+	void* shader_byte_code = nullptr;
+	size_t size_shader = 0;
+	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
+
+	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
+	m_vb->load(list, sizeof(vertex), size_list, shader_byte_code, size_shader);
+
+	GraphicsEngine::get()->releaseCompiledShader();
+
+
+	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "psmain", &shader_byte_code, &size_shader);
+	m_ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, size_shader);
+	GraphicsEngine::get()->releaseCompiledShader();
+
+	constant cc;
+	cc.m_angle = 0;
+
+	m_cb = GraphicsEngine::get()->createConstantBuffer();
+	m_cb->load(&cc, sizeof(constant));
 }
 
 void AppWindow::onUpdate()
 {
+	EngineTime::LogFrameStart();
+
+	InterpolateTimeScale();
+
 	Window::onUpdate();
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
@@ -57,32 +94,71 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
+	//ENGINE DELTA TIME
+	m_angle += 50 * (EngineTime::getDeltaTime());
+	constant cc;
+	cc.m_angle = m_angle;
 
-#pragma region Run Update and Draw Methods of all Gameobjects
-	if (!gameobjectList.empty())
-	{
-		for (int i = 0; i < gameobjectList.size(); i++)
-		{
-			gameobjectList[i]->update();
-			gameobjectList[i]->draw();
-		}
-	}
-#pragma endregion
+	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
 
-	//Set Rasterizer State to wireframe
-	GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
 
+	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
+
+
+	//SET THE VERTICES OF THE TRIANGLE TO DRAW
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
+
+	// FINALLY DRAW THE TRIANGLE
+	GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(m_vb->getSizeVertexList(), 0);
 	m_swap_chain->present(true);
+
+	EngineTime::LogFrameEnd();
+
+	if (useWireframe)
+	{
+		//Set Rasterizer State to wireframe
+		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);		
+	}
+		
+	//std::cout << EngineTime::getDeltaTime() << std::endl;
 }
 
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-
+	m_vb->release();
 	m_swap_chain->release();
-
+	m_vs->release();
+	m_ps->release();
 	GraphicsEngine::get()->release();
 }
+
+void AppWindow::InterpolateTimeScale()
+{
+	if (isIncreasing)
+	{
+		currentTimeScale += EngineTime::getUnscaledDeltaTime();
+		if (currentTimeScale > 2)
+		{
+			isIncreasing = false;
+		}
+	}
+	else
+	{
+		currentTimeScale -= EngineTime::getUnscaledDeltaTime();
+		if (currentTimeScale < 0.1)
+		{
+			isIncreasing = true;
+		}
+	}
+	cout << currentTimeScale << endl;
+	EngineTime::setTimeScale(currentTimeScale);
+}
+
 
 void AppWindow::InitRenderStates()
 {
