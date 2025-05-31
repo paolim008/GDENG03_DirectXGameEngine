@@ -13,6 +13,7 @@ class AppWindow : public Window
 {
 public:
 	AppWindow();
+	void updateQuadPosition();
 	~AppWindow();
 
 	// Inherited via Window
@@ -43,4 +44,9 @@ public:
 private:
 	double currentTimeScale = 1.0f;
 	bool isIncreasing = true;
+
+private:
+
+	float m_delta_pos;
+	float m_delta_scale;
 };
