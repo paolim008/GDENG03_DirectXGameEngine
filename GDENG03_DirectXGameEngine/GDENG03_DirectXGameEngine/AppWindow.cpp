@@ -5,6 +5,7 @@
 #include "IndexBuffer.h"
 #include "Vector3D.h"
 #include "Matrix4x4.h"
+#include "InputSystem.h"
 
 struct vertex
 {
@@ -37,7 +38,6 @@ void AppWindow::updateQuadPosition()
 	cc.m_angle = m_angle;
 
 	m_delta_pos += EngineTime::getDeltaTime() * 1.0f;
-	cout << m_delta_pos << endl;
 	if (m_delta_pos > 1.0f)
 	{
 		m_delta_pos = 0;
@@ -55,15 +55,15 @@ void AppWindow::updateQuadPosition()
 	cc.m_world.setScale(Vector3D(.5, .5, .5));
 
 	temp.setIdentity();
-	temp.setRotationZ(m_delta_scale);
+	temp.setRotationZ(0.0f);
 	cc.m_world *= temp;
 
 	temp.setIdentity();
-	temp.setRotationY(m_delta_scale);
+	temp.setRotationY(m_rot_y);
 	cc.m_world *= temp;
 
 	temp.setIdentity();
-	temp.setRotationX(m_delta_scale);
+	temp.setRotationX(m_rot_x);
 	cc.m_world *= temp;
 
 
@@ -89,6 +89,8 @@ AppWindow::~AppWindow()
 void AppWindow::onCreate()
 {
 	Window::onCreate();
+
+	InputSystem::get()->addListener(this);
 
 	EngineTime::initialize();
 	EngineTime::setTimeScale(1.f);
@@ -179,6 +181,9 @@ void AppWindow::onUpdate()
 	InterpolateTimeScale();
 
 	Window::onUpdate();
+
+	InputSystem::get()->update();
+
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
 		0, 0.3f, 0.4f, 1);
@@ -212,6 +217,7 @@ void AppWindow::onUpdate()
 		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);
 	}
 
+	
 	EngineTime::LogFrameEnd();
 } 
 
@@ -245,7 +251,7 @@ void AppWindow::InterpolateTimeScale()
 			isIncreasing = true;
 		}
 	}
-	cout << currentTimeScale << endl;
+	//cout << currentTimeScale << endl;
 	EngineTime::setTimeScale(currentTimeScale);
 }
 
@@ -255,8 +261,33 @@ void AppWindow::InitRenderStates()
 	D3D11_RASTERIZER_DESC wfd;
 	ZeroMemory(&wfd, sizeof(D3D11_RASTERIZER_DESC));
 	wfd.FillMode = D3D11_FILL_WIREFRAME;
-	wfd.CullMode = D3D11_CULL_BACK;
+	wfd.CullMode = D3D11_CULL_NONE;
 	wfd.DepthClipEnable = true;
 
 	GraphicsEngine::get()->get_device()->CreateRasterizerState(&wfd, &m_wireframe_RS);
+}
+
+void AppWindow::onKeyDown(int key)
+{
+	float rotationSpeed = 10.0f;
+	if (key == 'W')
+	{
+		m_rot_x += rotationSpeed * EngineTime::getDeltaTime();
+	}
+	else if (key == 'S')
+	{
+		m_rot_x -= rotationSpeed * EngineTime::getDeltaTime();
+	}
+	else if (key == 'A')
+	{
+		m_rot_y += rotationSpeed * EngineTime::getDeltaTime();
+	}
+	else if (key == 'D')
+	{
+		m_rot_y -= rotationSpeed * EngineTime::getDeltaTime();
+	}
+}
+
+void AppWindow::onKeyUp(int key)
+{
 }

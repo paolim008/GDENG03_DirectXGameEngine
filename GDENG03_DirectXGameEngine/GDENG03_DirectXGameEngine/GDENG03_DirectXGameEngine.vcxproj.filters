@@ -28,6 +28,9 @@
     <Filter Include="GameEngine\GraphicsEngine\RasterizerRenderState">
       <UniqueIdentifier>{15ff1989-cb36-48c3-8138-f68e02b203f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\InputSystem">
+      <UniqueIdentifier>{449ec4cc-fd48-4b31-911d-81173b0e73fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -55,10 +58,12 @@
     <ClCompile Include="PixelShader.cpp">
       <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
     </ClCompile>
-    <ClCompile Include="Gameobject.cpp" />
-    <ClCompile Include="Quad.cpp" />
-    <ClCompile Include="Vec3.cpp" />
-    <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="InputSystem.cpp">
+      <Filter>GameEngine\InputSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="EngineTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h">
@@ -83,12 +88,16 @@
     <ClInclude Include="PixelShader.h">
       <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
     </ClInclude>
-    <ClInclude Include="Gameobject.h" />
-    <ClInclude Include="Quad.h" />
-    <ClInclude Include="Vec3.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="math.h">
-      <Filter>GameEngine</Filter>
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="InputSystem.h">
+      <Filter>GameEngine\InputSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="EngineTime.h" />
+    <ClInclude Include="InputListener.h">
+      <Filter>GameEngine\InputSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
