@@ -6,6 +6,7 @@
 #include "Vector3D.h"
 #include "Matrix4x4.h"
 #include "InputSystem.h"
+#include "RasterizerStateManager.h"
 
 struct vertex
 {
@@ -100,6 +101,9 @@ void AppWindow::onCreate()
 
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
+
+	this->rasterizerStateManager = new RasterizerStateManager();
+	rasterizerStateManager->InitializeStates();
 
 	InitRenderStates();
 
@@ -211,11 +215,7 @@ void AppWindow::onUpdate()
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
 	m_swap_chain->present(true);
 
-	if (useWireframe)
-	{
-		//Set Rasterizer State to wireframe
-		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);
-	}
+	rasterizerStateManager->update();
 
 	
 	EngineTime::LogFrameEnd();
@@ -311,12 +311,14 @@ void AppWindow::onMouseMove(const Point& delta_mouse_pos)
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)
 {
-	m_scale_cube = 0.5f;
+	//m_scale_cube = 0.5f;
+	this->rasterizerStateManager->UseWireframe(false);
 }
 
 void AppWindow::onRightMouseDown(const Point& mouse_pos)
 {
-	m_scale_cube = 2.f;
+	//m_scale_cube = 2.f;
+	this->rasterizerStateManager->UseWireframe(true);
 }
 
 void AppWindow::onLeftMouseUp(const Point& mouse_pos)

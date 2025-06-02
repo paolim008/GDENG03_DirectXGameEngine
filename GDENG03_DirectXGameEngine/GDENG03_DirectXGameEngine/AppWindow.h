@@ -9,6 +9,7 @@
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "InputListener.h"
+#include "RasterizerStateManager.h"
 
 class AppWindow : public Window, public InputListener
 {
@@ -50,12 +51,9 @@ private:
 
 
 
-private:
-	bool useWireframe = false;
-
 public:
 	ID3D11RasterizerState* m_wireframe_RS;
-
+	RasterizerStateManager* rasterizerStateManager;
 	//Animation Oscillator
 private:
 	double currentTimeScale = 1.0f;
