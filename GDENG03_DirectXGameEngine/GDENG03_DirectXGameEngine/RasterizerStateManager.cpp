@@ -52,18 +52,18 @@ void RasterizerStateManager::InitializeStates()
 	GraphicsEngine::get()->get_device()->CreateRasterizerState(&wfd, &m_wireframe_back_cull_RS);
 }
 
-void RasterizerStateManager::update()
+void RasterizerStateManager::updateRasterizerState()
 {
-	if (!this->useWireframe) return;
-
 	switch (this->rasterState)
 	{
-	case NOCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_no_cull_RS);
-		break;
-	case FRONTCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_front_cull_RS);
-		break;
-	case BACKCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_back_cull_RS);
-		break;
+		case BACKCULLS: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_solid_back_cull_RS);
+			break;
+		case NOCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_no_cull_RS);
+			break;
+		case FRONTCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_front_cull_RS);
+			break;
+		case BACKCULLWF: GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_back_cull_RS);
+			break;
 	}
 
 }
@@ -71,20 +71,31 @@ void RasterizerStateManager::update()
 void RasterizerStateManager::ChangeRasterState(RASTERSTATE rasterState)
 {
 	this->rasterState = rasterState;
+	updateRasterizerState();
 }
 
-void RasterizerStateManager::UseWireframe(bool status)
+void RasterizerStateManager::ChangeRasterState()
 {
-	this->useWireframe = status;
-	if (!status)
+	rasterStateIndex++;
+	if (rasterStateIndex > 3)
 	{
+		rasterStateIndex = 0;
 		this->rasterState = BACKCULLS;
-		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_solid_back_cull_RS);
 	}
 	else
 	{
-		this->rasterState = NOCULLWF;
+		switch (rasterStateIndex)
+		{
+			case 1: this->rasterState = NOCULLWF;
+				break;
+			case 2: this->rasterState = FRONTCULLWF;
+				break;
+			case 3: this->rasterState = BACKCULLWF;
+				break;
+		}
 	}
-	
+	updateRasterizerState();
 }
+
+
 

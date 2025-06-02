@@ -46,11 +46,6 @@ private:
 
 	float m_angle = 0;
 
-private: 
-	void InitRenderStates();
-
-
-
 public:
 	ID3D11RasterizerState* m_wireframe_RS;
 	RasterizerStateManager* rasterizerStateManager;

@@ -7,7 +7,7 @@ public:
 	RasterizerStateManager();
 	~RasterizerStateManager();
 	void InitializeStates();
-	void update();
+	void updateRasterizerState();
 
 	enum RASTERSTATE
 	{
@@ -18,7 +18,7 @@ public:
 	};
 
 	void ChangeRasterState(RASTERSTATE rasterState);
-	void UseWireframe(bool status);
+	void ChangeRasterState();
 
 private:
 	ID3D11RasterizerState* m_solid_back_cull_RS;
@@ -28,6 +28,7 @@ private:
 
 	RASTERSTATE rasterState = NOCULLWF;
 	bool useWireframe = false;
+	int rasterStateIndex = 0;
 };
 
 

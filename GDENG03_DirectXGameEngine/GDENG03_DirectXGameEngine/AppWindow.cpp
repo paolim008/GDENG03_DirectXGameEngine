@@ -105,8 +105,6 @@ void AppWindow::onCreate()
 	this->rasterizerStateManager = new RasterizerStateManager();
 	rasterizerStateManager->InitializeStates();
 
-	InitRenderStates();
-
 	vertex vertex_list[] =
 	{
 		//X - Y - Z
@@ -188,6 +186,8 @@ void AppWindow::onUpdate()
 
 	InputSystem::get()->update();
 
+#pragma region Setup Cube Rendering
+
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
 		0, 0.3f, 0.4f, 1);
@@ -211,11 +211,13 @@ void AppWindow::onUpdate()
 	//SET THE INDICES OF THE TRIANGLE TO DRAW
 	GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
 
+#pragma endregion Setup Cube Rendering
+
 	// FINALLY DRAW THE TRIANGLE
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
 	m_swap_chain->present(true);
 
-	rasterizerStateManager->update();
+	//rasterizerStateManager->update();
 
 	
 	EngineTime::LogFrameEnd();
@@ -265,18 +267,6 @@ void AppWindow::InterpolateTimeScale()
 	EngineTime::setTimeScale(currentTimeScale);
 }
 
-
-void AppWindow::InitRenderStates()
-{
-	D3D11_RASTERIZER_DESC wfd;
-	ZeroMemory(&wfd, sizeof(D3D11_RASTERIZER_DESC));
-	wfd.FillMode = D3D11_FILL_WIREFRAME;
-	wfd.CullMode = D3D11_CULL_NONE;
-	wfd.DepthClipEnable = true;
-
-	GraphicsEngine::get()->get_device()->CreateRasterizerState(&wfd, &m_wireframe_RS);
-}
-
 void AppWindow::onKeyDown(int key)
 {
 	float rotationSpeed = 10.0f;
@@ -296,10 +286,15 @@ void AppWindow::onKeyDown(int key)
 	{
 		m_rot_y -= rotationSpeed * EngineTime::getDeltaTime();
 	}
+
 }
 
 void AppWindow::onKeyUp(int key)
 {
+	if (key == 'R')
+	{
+			this->rasterizerStateManager->ChangeRasterState();
+	}
 }
 
 void AppWindow::onMouseMove(const Point& delta_mouse_pos)
@@ -311,14 +306,14 @@ void AppWindow::onMouseMove(const Point& delta_mouse_pos)
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)
 {
-	//m_scale_cube = 0.5f;
-	this->rasterizerStateManager->UseWireframe(false);
+	m_scale_cube = 0.5f;
+	//this->rasterizerStateManager->UseWireframe(false);
 }
 
 void AppWindow::onRightMouseDown(const Point& mouse_pos)
 {
-	//m_scale_cube = 2.f;
-	this->rasterizerStateManager->UseWireframe(true);
+	m_scale_cube = 2.f;
+	//this->rasterizerStateManager->UseWireframe(true);
 }
 
 void AppWindow::onLeftMouseUp(const Point& mouse_pos)
