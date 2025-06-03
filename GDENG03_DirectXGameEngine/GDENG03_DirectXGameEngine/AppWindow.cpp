@@ -45,15 +45,15 @@ void AppWindow::onCreate()
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
-	InitRenderStates();
+	//InitRenderStates();
 
 	vertex list[] =
 	{
 		//X - Y - Z
-		{-0.5f,-0.5f,0.0f,    -0.32f,-0.11f,0.0f,   0,0,0,  0,1,0 }, // POS1
-		{-0.5f,0.5f,0.0f,     -0.5f,0.4f,0.0f,    1,1,0,  0,1,1 }, // POS2
-		{ 0.5f,-0.5f,0.0f,     0.75f,-0.73f,0.0f,   0,0,1,  1,0,0 },// POS2
-		{ 0.5f,0.5f,0.0f,      -0.5f,-0.5f,0.0f,    1,1,1,  0,0,1 }
+		{-0.5f,-0.5f,0.0f,    1.f,1.f,0.0f,   0,0,0,  0,1,0 }, // POS1
+		{1.f,0.25f,0.0f,     0.25f,-0.75f,0.0f,    1,1,0,  0,1,1 }, // POS2
+		{ -0.75f,0.75f,0.0f,      -0.25f,1.f,0.0f,   0,0,1,  1,0,0 },// POS2
+		{ -0.5f,-0.75f,0.0f,      -0.5f,-0.25f,0.0f,    1,1,1,  0,0,1 }
 	};
 
 	m_vb = GraphicsEngine::get()->createVertexBuffer();
@@ -83,8 +83,9 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	EngineTime::LogFrameStart();
-
-	InterpolateTimeScale();
+	//cout << "FRAME COUNT: " << frameCount << endl;
+	//cout << "FRAME COUNT: " << frameCount << endl;
+	//InterpolateTimeScale();
 
 	Window::onUpdate();
 	//CLEAR THE RENDER TARGET 
@@ -118,11 +119,11 @@ void AppWindow::onUpdate()
 
 	EngineTime::LogFrameEnd();
 
-	if (useWireframe)
-	{
+	//if (useWireframe)
+	//{
 		//Set Rasterizer State to wireframe
-		GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);		
-	}
+	//	GraphicsEngine::get()->getImmediateDeviceContext()->setRSState(m_wireframe_RS);		
+	//}
 		
 	//std::cout << EngineTime::getDeltaTime() << std::endl;
 }
@@ -141,15 +142,15 @@ void AppWindow::InterpolateTimeScale()
 {
 	if (isIncreasing)
 	{
-		currentTimeScale += EngineTime::getUnscaledDeltaTime();
-		if (currentTimeScale > 2)
+		currentTimeScale += EngineTime::getUnscaledDeltaTime()*20;
+		if (currentTimeScale > 4)
 		{
 			isIncreasing = false;
 		}
 	}
 	else
 	{
-		currentTimeScale -= EngineTime::getUnscaledDeltaTime();
+		currentTimeScale -= EngineTime::getUnscaledDeltaTime()*20;
 		if (currentTimeScale < 0.1)
 		{
 			isIncreasing = true;

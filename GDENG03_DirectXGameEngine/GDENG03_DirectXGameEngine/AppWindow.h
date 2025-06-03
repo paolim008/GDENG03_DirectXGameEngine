@@ -44,4 +44,6 @@ public:
 private:
 	double currentTimeScale = 1.0f;
 	bool isIncreasing = true;
+
+	int frameCount = 0;
 };
