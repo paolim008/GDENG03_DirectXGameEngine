@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "Window.h"
 #include "GraphicsEngine.h"
 #include "EngineTime.h"
@@ -6,6 +8,7 @@
 #include "DeviceContext.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
+#include "Cube.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
 #include "InputListener.h"
@@ -68,6 +71,8 @@ private:
 
 	Matrix4x4 m_world_cam;
 
+private:
+	vector<AGameObject*> m_gameObjectList;
 
 };
 

@@ -57,8 +57,19 @@ public:
 		m_mat[1][1] = cos(z);
 	}
 
+	Matrix4x4 multiplyTo(Matrix4x4 matrix)
+	{
+		Matrix4x4 result;
+		for (int row = 0; row < 4; ++row) {
+			for (int col = 0; col < 4; ++col) {
+				for (int k = 0; k < 4; ++k) {
+					result.m_mat[row][col] += this->m_mat[row][k] * matrix.m_mat[k][col];
+				}
+			}
+		}
 
-
+		return result;
+	}
 
 	void operator *=(const Matrix4x4& matrix)
 	{

@@ -33,18 +33,20 @@ AppWindow::AppWindow()
 
 void AppWindow::update()
 {
+	double deltaTime = EngineTime::getDeltaTime();
+
 	//ENGINE DELTA TIME
-	m_angle += 50 * (EngineTime::getDeltaTime());
+	m_angle += 50 * (deltaTime);
 	constant cc;
 	cc.m_angle = m_angle;
 
-	m_delta_pos += EngineTime::getDeltaTime() * 1.0f;
+	m_delta_pos += deltaTime * 1.0f;
 	if (m_delta_pos > 1.0f)
 	{
 		m_delta_pos = 0;
 	}
 
-	m_delta_scale += EngineTime::getDeltaTime() / 0.55f;
+	m_delta_scale += deltaTime / 0.55f;
 
 
 	Matrix4x4 temp;
@@ -194,6 +196,17 @@ void AppWindow::onCreate()
 	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
 	m_vb->load(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
 
+
+	for (int i = 0; i < 2; i++)
+	{
+
+		Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
+		cube->setPosition(10, 2, 2);
+		cube->setScale(Vector3D(10, 10, 10));
+		this->m_gameObjectList.push_back(cube);
+		cout << "Cube Created: " << i << endl;
+	}
+
 	GraphicsEngine::get()->releaseCompiledShader();
 
 
@@ -220,6 +233,9 @@ void AppWindow::onUpdate()
 
 #pragma region Setup Cube Rendering
 
+	double deltaTime = EngineTime::getDeltaTime();
+
+	
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
 		0, 0.3f, 0.4f, 1);
@@ -242,11 +258,21 @@ void AppWindow::onUpdate()
 
 	//SET THE INDICES OF THE TRIANGLE TO DRAW
 	GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
+	
 
 #pragma endregion Setup Cube Rendering
 
 	// FINALLY DRAW THE TRIANGLE
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
+
+	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
+	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
+
+	for (int i = 0; i < m_gameObjectList.size(); i++)
+	{
+		m_gameObjectList[i]->update(deltaTime);
+		m_gameObjectList[i]->draw(width, height, this->m_vs, this->m_ps);
+	}
 	m_swap_chain->present(true);
 
 	//rasterizerStateManager->update();
@@ -353,7 +379,7 @@ void AppWindow::onMouseMove(const Point& mouse_pos)
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)
 {
-	m_scale_cube = 0.5f;
+	m_scale_cube = 0.2f;
 	//this->rasterizerStateManager->UseWireframe(false);
 }
 
