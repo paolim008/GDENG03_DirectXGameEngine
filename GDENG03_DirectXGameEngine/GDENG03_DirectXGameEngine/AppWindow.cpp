@@ -186,26 +186,23 @@ void AppWindow::onCreate()
 
 	m_ib->load(index_list, size_index_list); 
 
-
-
-
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
-
 	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
+
 	m_vb->load(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
 
-
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 100; i++)
 	{
 
 		Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
-		cube->setPosition(10, 2, 2);
-		cube->setScale(Vector3D(10, 10, 10));
+		cube->setPosition(0, 0, 0);
+		cube->setScale(Vector3D(1, 1, 1));
 		this->m_gameObjectList.push_back(cube);
 		cout << "Cube Created: " << i << endl;
 	}
+
 
 	GraphicsEngine::get()->releaseCompiledShader();
 
@@ -219,13 +216,15 @@ void AppWindow::onCreate()
 
 	m_cb = GraphicsEngine::get()->createConstantBuffer();
 	m_cb->load(&cc, sizeof(constant));
+
+
 }
 
 void AppWindow::onUpdate()
 {
 	EngineTime::LogFrameStart();
 
-	InterpolateTimeScale();
+	//InterpolateTimeScale();
 
 	Window::onUpdate();
 
@@ -235,22 +234,25 @@ void AppWindow::onUpdate()
 
 	double deltaTime = EngineTime::getDeltaTime();
 
+	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
 	
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
 		0, 0.3f, 0.4f, 1);
+
 	//SET VIEWPORT OF RENDER TARGET IN WHICH WE HAVE TO DRAW
+	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
+	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
+
 	RECT rc = this->getClientWindowRect();
-	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(width, height);
 
 	update();
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
-
-	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
 
 
 	//SET THE VERTICES OF THE TRIANGLE TO DRAW
@@ -264,9 +266,6 @@ void AppWindow::onUpdate()
 
 	// FINALLY DRAW THE TRIANGLE
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
-
-	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
-	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
 
 	for (int i = 0; i < m_gameObjectList.size(); i++)
 	{

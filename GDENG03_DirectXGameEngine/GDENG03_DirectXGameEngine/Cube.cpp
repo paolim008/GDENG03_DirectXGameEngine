@@ -78,6 +78,7 @@ void Cube::update(float deltaTime)
 	this->deltaTime = deltaTime;
 }
 
+
 void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* pixelShader)
 {
 	GraphicsEngine* graphicsEngine = GraphicsEngine::get();
@@ -112,7 +113,8 @@ void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* 
 	cbData.worldMatrix = allMatrix;
 
 	cbData.viewMatrix.setIdentity();
-	cbData.projMatrix.setOrthoLH(width / 400.0f, height / 400.0f, -4.f, 4.f);
+	//cbData.projMatrix.setOrthoLH(width / 400.0f, height / 400.0f, -4.f, 4.f);
+	cbData.projMatrix.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.01f, 100.0f);
 
 	this->constantBuffer->update(deviceContext, &cbData);
 	deviceContext->setConstantBuffer(vertexShader, this->constantBuffer);

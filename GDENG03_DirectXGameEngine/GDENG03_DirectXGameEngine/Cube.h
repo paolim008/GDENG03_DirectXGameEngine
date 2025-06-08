@@ -15,6 +15,7 @@ public:
 	void update(float deltaTime) override;
 	void draw(int width, int height, VertexShader* vertexShader, PixelShader* pixelShader) override;
 	void setAnimSpeed(float speed);
+
 	void onKeyDown(int key) override;
 	void onKeyUp(int key) override;
 	void onMouseMove(const Point& delta_mouse_pos) override;
