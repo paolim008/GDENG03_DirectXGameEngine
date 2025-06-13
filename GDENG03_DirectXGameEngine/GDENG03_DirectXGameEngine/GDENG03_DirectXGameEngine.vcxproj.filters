@@ -34,6 +34,9 @@
     <Filter Include="GameEngine\Math">
       <UniqueIdentifier>{778ea0fc-cdab-4e43-9fe4-dceaae8c7668}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Primitives">
+      <UniqueIdentifier>{b6793129-cdb7-40e3-b7b0-590ce135e9b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,6 +70,14 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="EngineTime.cpp" />
+    <ClCompile Include="AGameObject.cpp" />
+    <ClCompile Include="RasterizerStateManager.cpp" />
+    <ClCompile Include="Cube.cpp">
+      <Filter>GameEngine\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>GameEngine\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppWindow.h">
@@ -108,6 +119,15 @@
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>GameEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="AGameObject.h" />
+    <ClInclude Include="RasterizerStateManager.h" />
+    <ClInclude Include="Vector4D.h" />
+    <ClInclude Include="Cube.h">
+      <Filter>GameEngine\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>GameEngine\Primitives</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

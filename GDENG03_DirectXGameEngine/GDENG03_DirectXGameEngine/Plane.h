@@ -6,11 +6,11 @@
 #include "VertexBuffer.h"
 
 using namespace std;
-class Cube : public AGameObject, public InputListener
+class Plane : public AGameObject, public InputListener
 {
 public:
-	Cube(string name, void* shaderByteCode, size_t sizeShader);
-	~Cube();
+	Plane(string name, void* shaderByteCode, size_t sizeShader);
+	~Plane();
 
 	void update(float deltaTime) override;
 	void draw(int width, int height, VertexShader* vertexShader, PixelShader* pixelShader) override;

@@ -40,6 +40,7 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	}
 
 	hr = device->CreateRenderTargetView(buffer, NULL, &m_rtv);
+
 	buffer->Release();
 
 	if (FAILED(hr))

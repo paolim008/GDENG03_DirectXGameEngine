@@ -6,6 +6,7 @@
 #include "Vector3D.h"
 #include "Matrix4x4.h"
 #include "InputSystem.h"
+#include "Plane.h"
 #include "RasterizerStateManager.h"
 
 struct vertex
@@ -31,7 +32,7 @@ AppWindow::AppWindow()
 {
 }
 
-void AppWindow::update()
+/*void AppWindow::update()
 {
 	double deltaTime = EngineTime::getDeltaTime();
 
@@ -67,7 +68,7 @@ void AppWindow::update()
 
 	temp.setIdentity();
 	temp.setRotationX(m_rot_x);
-	cc.m_world *= temp;*/
+	cc.m_world *= temp;#1#
 
 	cc.m_world.setIdentity();
 
@@ -111,7 +112,7 @@ void AppWindow::update()
 
 
 	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
-}
+}*/
 
 
 AppWindow::~AppWindow()
@@ -139,7 +140,7 @@ void AppWindow::onCreate()
 	this->rasterizerStateManager = new RasterizerStateManager();
 	rasterizerStateManager->InitializeStates();
 
-	vertex vertex_list[] =
+	/*vertex vertex_list[] =
 	{
 		//X - Y - Z
 
@@ -154,12 +155,12 @@ void AppWindow::onCreate()
 		{Vector3D(0.5f,0.5f,0.5f), Vector3D(1,0,0),  Vector3D(0,1,1)}, // POS2
 		{ Vector3D(-0.5f,0.5f,0.5f),Vector3D(0,1,1),  Vector3D(1,0,0)},// POS2
 		{ Vector3D(-0.5f,-0.5f,0.5f), Vector3D(1,1,0),  Vector3D(0,0,1)} //POS4
-	};
+	};*/
 
-	m_vb = GraphicsEngine::get()->createVertexBuffer();
-	UINT size_list = ARRAYSIZE(vertex_list);
+	// m_vb = GraphicsEngine::get()->createVertexBuffer();
+	// UINT size_list = ARRAYSIZE(vertex_list);
 
-	unsigned int index_list[] =
+	/*unsigned int index_list[] =
 	{
 		//FRONT SIDE
 		0,1,2,
@@ -185,23 +186,51 @@ void AppWindow::onCreate()
 	UINT size_index_list = ARRAYSIZE(index_list);
 
 	m_ib->load(index_list, size_index_list); 
-
+	*/
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
 
-	m_vb->load(vertex_list, sizeof(vertex), size_list, shader_byte_code, size_shader);
-
-	for (int i = 0; i < 100; i++)
+	/*for (int i = 0; i < 5; i++)
 	{
-
 		Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
-		cube->setPosition(0, 0, 0);
-		cube->setScale(Vector3D(1, 1, 1));
+		cube->setAnimSpeed(0.f);
+		cube->setPosition(i*0.2, 0, 0);
+		cube->setScale(Vector3D(.1, .1, .1));
+		cube->setRotation(0, 0, 0);
+		cube->setAnimSpeed(1.f);
 		this->m_gameObjectList.push_back(cube);
 		cout << "Cube Created: " << i << endl;
-	}
+
+		Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
+		plane->setAnimSpeed(0.f);
+		plane->setPosition(i*0.2, 0, 0);
+		plane->setScale(Vector3D(.1, .1, .1));
+		plane->setRotation(0, 0, 0);
+		plane->setAnimSpeed(1.f);
+		this->m_gameObjectList.push_back(plane);
+		cout << "Plane Created: " << i << endl;
+	}*/
+
+
+	Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
+	cube->setAnimSpeed(0.f);
+	cube->setPosition(0, 0, 0);
+	cube->setScale(Vector3D(.1, .1, .1));
+	cube->setRotation(45, 45, 0);
+	cube->setAnimSpeed(1.f);
+	this->m_gameObjectList.push_back(cube);
+
+	Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
+	plane->setAnimSpeed(0.f);
+	plane->setPosition(0, 0, 0);
+	plane->setScale(Vector3D(.1, .1, .1));
+	plane->setRotation(0, 0, 0);
+	plane->setAnimSpeed(1.f);
+	this->m_gameObjectList.push_back(plane);
+
+
 
 
 	GraphicsEngine::get()->releaseCompiledShader();
@@ -211,11 +240,11 @@ void AppWindow::onCreate()
 	m_ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, size_shader);
 	GraphicsEngine::get()->releaseCompiledShader();
 
-	constant cc;
-	cc.m_angle = 0;
-
-	m_cb = GraphicsEngine::get()->createConstantBuffer();
-	m_cb->load(&cc, sizeof(constant));
+	// constant cc;
+	// cc.m_angle = 0;
+	//
+	// m_cb = GraphicsEngine::get()->createConstantBuffer();
+	// m_cb->load(&cc, sizeof(constant));
 
 
 }
@@ -235,8 +264,8 @@ void AppWindow::onUpdate()
 	double deltaTime = EngineTime::getDeltaTime();
 
 	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
 	
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
@@ -249,23 +278,23 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(width, height);
 
-	update();
+	//update();
 
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
-
-
-	//SET THE VERTICES OF THE TRIANGLE TO DRAW
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
-
-	//SET THE INDICES OF THE TRIANGLE TO DRAW
-	GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
-	
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
+	//
+	//
+	// //SET THE VERTICES OF THE TRIANGLE TO DRAW
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
+	//
+	// //SET THE INDICES OF THE TRIANGLE TO DRAW
+	// GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
+	//
 
 #pragma endregion Setup Cube Rendering
 
 	// FINALLY DRAW THE TRIANGLE
-	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
+//	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
 
 	for (int i = 0; i < m_gameObjectList.size(); i++)
 	{
@@ -283,9 +312,9 @@ void AppWindow::onUpdate()
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	m_vb->release();
-	m_ib->release();
-	m_cb->release();
+	//m_vb->release();
+	//m_ib->release();
+	//m_cb->release();
 	m_swap_chain->release();
 	m_vs->release();
 	m_ps->release();
@@ -373,7 +402,7 @@ void AppWindow::onMouseMove(const Point& mouse_pos)
 	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * engineDeltaTime;
 	m_rot_y += (mouse_pos.m_x - (width / 2.0f))* engineDeltaTime;
 
-	InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
+	//InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)

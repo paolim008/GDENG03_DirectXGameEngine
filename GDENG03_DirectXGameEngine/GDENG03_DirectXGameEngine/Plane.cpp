@@ -1,4 +1,4 @@
-#include "Cube.h"
+#include "Plane.h"
 
 #include <iostream>
 
@@ -7,7 +7,7 @@
 #include "GraphicsEngine.h"
 #include "InputSystem.h"
 
-Cube::Cube(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(name)
+Plane::Plane(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(name)
 {
 
 	InputSystem::get()->addListener(this);
@@ -16,16 +16,16 @@ Cube::Cube(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(n
 	Vertex quadlist[] = {
 
 		//FRONT FACE
-		{Vector3D(-0.5f,-0.5f,-0.5f),    Vector3D(1,0.2,1),  Vector3D(0.2,1,1) },
-		{Vector3D(-0.5f,0.5f,-0.5f),    Vector3D(1,0.5,0.2), Vector3D(0.2,1,1) },
-		{ Vector3D(0.5f,0.5f,-0.5f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
-		{ Vector3D(0.5f,-0.5f,-0.5f),     Vector3D(1,0,0.2), Vector3D(0.2,0.3,1) },
+		{Vector3D(-0.5f,-0.5f,-0.01f),    Vector3D(1,0.2,1),  Vector3D(0.2,1,1) },
+		{Vector3D(-0.5f,0.5f,-0.01f),    Vector3D(1,0.5,0.2), Vector3D(0.2,1,1) },
+		{ Vector3D(0.5f,0.5f,-0.01f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
+		{ Vector3D(0.5f,-0.5f,-0.01f),     Vector3D(1,0,0.2), Vector3D(0.2,0.3,1) },
 
 		//BACK FACE
-		{ Vector3D(0.5f,-0.5f,0.5f),    Vector3D(1,1,0.2), Vector3D(0.2,1,1), },
-		{ Vector3D(0.5f,0.5f,0.5f),    Vector3D(1,0.5,0.2), Vector3D(0.2,0,1) },
-		{ Vector3D(-0.5f,0.5f,0.5f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
-		{ Vector3D(-0.5f,-0.5f,0.5f),     Vector3D(1,0,0.2),  Vector3D(0.2,0.5,1) }
+		{ Vector3D(0.5f,-0.5f,0.01f),    Vector3D(1,1,0.2), Vector3D(0.2,1,1), },
+		{ Vector3D(0.5f,0.5f,0.01f),    Vector3D(1,0.5,0.2), Vector3D(0.2,0,1) },
+		{ Vector3D(-0.5f,0.5f,0.01f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
+		{ Vector3D(-0.5f,-0.5f,0.01f),     Vector3D(1,0,0.2),  Vector3D(0.2,0.5,1) }
 
 	};
 
@@ -65,35 +65,26 @@ Cube::Cube(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(n
 	cout << "Spawned Cube" << endl;
 }
 
-Cube::~Cube()
+Plane::~Plane()
 {
-	// this->vertexBuffer->release();
-	// this->indexBuffer->release();
-	// this->constantBuffer->release();
 	AGameObject::~AGameObject();
 }
 
-void Cube::update(float deltaTime)
+void Plane::update(float deltaTime)
 {
 	this->cbData.time = EngineTime::getDeltaTime();
-	
-
-	//this->deltaPos += deltaTime / 10.0f;
-	//if (this->deltaPos > 1.0f)
-		//this->deltaPos = 0;
-
 
 	Matrix4x4 temp;
 
-	//this->deltaScale += deltaTime * this->speed;
+	this->deltaScale += deltaTime * this->speed;
 
-	//this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
+	this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
 
 	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
 }
 
 
-void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* pixelShader)
+void Plane::draw(int width, int height, VertexShader* vertexShader, PixelShader* pixelShader)
 {
 	if (this->deltaPos > 1.0f) {
 		this->deltaPos = 0.0f;
@@ -140,12 +131,12 @@ void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* 
 	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(this->indexBuffer->getSizeIndexList(), 0, 0);
 }
 
-void Cube::setAnimSpeed(float speed)
+void Plane::setAnimSpeed(float speed)
 {
 	this->speed = speed;
 }
 
-void Cube::onKeyDown(int key)
+void Plane::onKeyDown(int key)
 {
 	if (key == 'W')
 	{
@@ -167,28 +158,28 @@ void Cube::onKeyDown(int key)
 	}
 }
 
-void Cube::onKeyUp(int key)
+void Plane::onKeyUp(int key)
 {
 
 }
 
-void Cube::onMouseMove(const Point& delta_mouse_pos)
+void Plane::onMouseMove(const Point& delta_mouse_pos)
 {
 }
 
-void Cube::onLeftMouseDown(const Point& mouse_pos)
+void Plane::onLeftMouseDown(const Point& mouse_pos)
 {
 }
 
-void Cube::onLeftMouseUp(const Point& mouse_pos)
+void Plane::onLeftMouseUp(const Point& mouse_pos)
 {
 }
 
-void Cube::onRightMouseDown(const Point& mouse_pos)
+void Plane::onRightMouseDown(const Point& mouse_pos)
 {
 }
 
-void Cube::onRightMouseUp(const Point& mouse_pos)
+void Plane::onRightMouseUp(const Point& mouse_pos)
 {
 }
 
