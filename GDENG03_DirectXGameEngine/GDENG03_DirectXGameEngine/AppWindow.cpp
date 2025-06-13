@@ -32,7 +32,7 @@ AppWindow::AppWindow()
 {
 }
 
-/*void AppWindow::update()
+void AppWindow::update()
 {
 	double deltaTime = EngineTime::getDeltaTime();
 
@@ -56,7 +56,7 @@ AppWindow::AppWindow()
 	// temp.setScale(Vector3D::lerp(Vector3D(.5,.5,0), Vector3D(1,1,0), (sin(m_delta_scale)+1.0f)/2.0f));
 	// cc.m_world *= temp;
 
-	/*cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
+	cc.m_world.setScale(Vector3D(m_scale_cube, m_scale_cube, m_scale_cube));
 
 	temp.setIdentity();
 	temp.setRotationZ(0.0f);
@@ -68,7 +68,7 @@ AppWindow::AppWindow()
 
 	temp.setIdentity();
 	temp.setRotationX(m_rot_x);
-	cc.m_world *= temp;#1#
+	cc.m_world *= temp;
 
 	cc.m_world.setIdentity();
 
@@ -111,8 +111,8 @@ AppWindow::AppWindow()
 	cc.m_projection.setPerspectiveFovLH(1.57f, ((float)width / (float)height), 0.01f, 100.0f);
 
 
-	m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
-}*/
+	//m_cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+}
 
 
 AppWindow::~AppWindow()
@@ -140,53 +140,6 @@ void AppWindow::onCreate()
 	this->rasterizerStateManager = new RasterizerStateManager();
 	rasterizerStateManager->InitializeStates();
 
-	/*vertex vertex_list[] =
-	{
-		//X - Y - Z
-
-		//FRONT FACE
-		{Vector3D(-0.5f,-0.5f,-0.5f),  Vector3D(1,0,1),  Vector3D(0,1,0)}, // POS1
-		{Vector3D(-0.5f,0.5f,-0.5f), Vector3D(1,0,0),  Vector3D(0,1,1)}, // POS2
-		{ Vector3D(0.5f,0.5f,-0.5f),Vector3D(0,1,1),  Vector3D(1,0,0)},// POS2
-		{ Vector3D(0.5f,-0.5f,-0.5f), Vector3D(1,1,0),  Vector3D(0,0,1)}, //POS4
-
-		//BACK FACE
-		{Vector3D(0.5f,-0.5f,0.5f),  Vector3D(1,0,1),  Vector3D(0,1,0)}, // POS1
-		{Vector3D(0.5f,0.5f,0.5f), Vector3D(1,0,0),  Vector3D(0,1,1)}, // POS2
-		{ Vector3D(-0.5f,0.5f,0.5f),Vector3D(0,1,1),  Vector3D(1,0,0)},// POS2
-		{ Vector3D(-0.5f,-0.5f,0.5f), Vector3D(1,1,0),  Vector3D(0,0,1)} //POS4
-	};*/
-
-	// m_vb = GraphicsEngine::get()->createVertexBuffer();
-	// UINT size_list = ARRAYSIZE(vertex_list);
-
-	/*unsigned int index_list[] =
-	{
-		//FRONT SIDE
-		0,1,2,
-		2,3,0,
-		//BACK SIDE
-		4,5,6,
-		6,7,4,
-		//TOP SIDE
-		1,6,5,
-		5,2,1,
-		//BOTTOM SIDE
-		7,0,3,
-		3,4,7,
-		//RIGHT SIDE
-		3,2,5,
-		5,4,3,
-		//LEFT SIDE
-		7,6,1,
-		1,0,7,
-	};
-
-	m_ib = GraphicsEngine::get()->createIndexBuffer();
-	UINT size_index_list = ARRAYSIZE(index_list);
-
-	m_ib->load(index_list, size_index_list); 
-	*/
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
@@ -225,8 +178,8 @@ void AppWindow::onCreate()
 	Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
 	plane->setAnimSpeed(0.f);
 	plane->setPosition(0, 0, 0);
-	plane->setScale(Vector3D(.1, .1, .1));
-	plane->setRotation(0, 0, 0);
+	plane->setScale(Vector3D(.4, .4, .4));
+	plane->setRotation(0, 90, 0);
 	plane->setAnimSpeed(1.f);
 	this->m_gameObjectList.push_back(plane);
 
@@ -253,8 +206,6 @@ void AppWindow::onUpdate()
 {
 	EngineTime::LogFrameStart();
 
-	//InterpolateTimeScale();
-
 	Window::onUpdate();
 
 	InputSystem::get()->update();
@@ -262,10 +213,6 @@ void AppWindow::onUpdate()
 #pragma region Setup Cube Rendering
 
 	double deltaTime = EngineTime::getDeltaTime();
-
-	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
 	
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
@@ -278,23 +225,9 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(width, height);
 
-	//update();
-
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
-	//
-	//
-	// //SET THE VERTICES OF THE TRIANGLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
-	//
-	// //SET THE INDICES OF THE TRIANGLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
-	//
+	update();
 
 #pragma endregion Setup Cube Rendering
-
-	// FINALLY DRAW THE TRIANGLE
-//	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
 
 	for (int i = 0; i < m_gameObjectList.size(); i++)
 	{
@@ -303,18 +236,12 @@ void AppWindow::onUpdate()
 	}
 	m_swap_chain->present(true);
 
-	//rasterizerStateManager->update();
-
-	
 	EngineTime::LogFrameEnd();
 } 
 
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	//m_vb->release();
-	//m_ib->release();
-	//m_cb->release();
 	m_swap_chain->release();
 	m_vs->release();
 	m_ps->release();
@@ -358,23 +285,23 @@ void AppWindow::onKeyDown(int key)
 	float rotationSpeed = 10.0f;
 	if (key == 'W')
 	{
-		m_forward = 1.0f;
+		//m_forward = 1.0f;
 		//m_rot_x += rotationSpeed * EngineTime::getDeltaTime();
 	}
 	else if (key == 'S')
 	{
-		m_forward = -1.0f;
+		//m_forward = -1.0f;
 		//m_rot_x -= rotationSpeed * EngineTime::getDeltaTime();
 	}
 	else if (key == 'A')
 	{
-		m_rightward = -1.0f;
+		//m_rightward = -1.0f;
 
 		//m_rot_y += rotationSpeed * EngineTime::getDeltaTime();
 	}
 	else if (key == 'D')
 	{
-		m_rightward = 1.0f;
+		//m_rightward = 1.0f;
 
 		//m_rot_y -= rotationSpeed * EngineTime::getDeltaTime();
 	}
@@ -383,8 +310,8 @@ void AppWindow::onKeyDown(int key)
 
 void AppWindow::onKeyUp(int key)
 {
-	m_forward = 0.0f;
-	m_rightward = 0.0f;
+	//m_forward = 0.0f;
+	//m_rightward = 0.0f;
 
 	if (key == 'R')
 	{
@@ -402,7 +329,7 @@ void AppWindow::onMouseMove(const Point& mouse_pos)
 	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * engineDeltaTime;
 	m_rot_y += (mouse_pos.m_x - (width / 2.0f))* engineDeltaTime;
 
-	//InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
+	InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }
 
 void AppWindow::onLeftMouseDown(const Point& mouse_pos)

@@ -76,9 +76,11 @@ void Plane::update(float deltaTime)
 
 	Matrix4x4 temp;
 
-	this->deltaScale += deltaTime * this->speed;
+	this->deltaTime = deltaTime;
 
-	this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
+	//this->deltaScale += deltaTime * this->speed;
+
+	//this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
 
 	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
 }
@@ -146,7 +148,7 @@ void Plane::onKeyDown(int key)
 	}
 	else if (key == 'E')
 	{
-		this->setPosition(this->getLocalPosition() + Vector3D(5.f, 0.f, 0.f));
+		this->setPosition(this->getLocalPosition() + Vector3D(0.1f, 0.f, 0.f));
 	}
 	else if (key == 'S')
 	{

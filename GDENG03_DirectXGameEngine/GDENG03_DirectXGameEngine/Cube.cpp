@@ -155,7 +155,7 @@ void Cube::onKeyDown(int key)
 	}
 	else if (key == 'E')
 	{
-		this->setPosition(this->getLocalPosition() + Vector3D(5.f, 0.f, 0.f));
+		this->setPosition(this->getLocalPosition() + Vector3D(0.1f, 0.f, 0.f));
 	}
 	else if (key == 'S')
 	{

@@ -41,6 +41,27 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 
 	hr = device->CreateRenderTargetView(buffer, NULL, &m_rtv);
 
+	HRESULT bufferResult = this->m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
+
+	HRESULT renderResult = device->CreateRenderTargetView(buffer, NULL, &this->m_rtv);
+	buffer->Release();
+
+	D3D11_TEXTURE2D_DESC textDesc = {};
+	textDesc.Width = width;
+	textDesc.Height = height;
+	textDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	textDesc.Usage = D3D11_USAGE_DEFAULT;
+	textDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	textDesc.MipLevels = 1;
+	textDesc.SampleDesc.Count = 1;
+	textDesc.SampleDesc.Quality = 0;
+	textDesc.MiscFlags = 0;
+	textDesc.ArraySize = 1;
+	textDesc.CPUAccessFlags = 0;
+
+	HRESULT depthResult = device->CreateTexture2D(&textDesc, NULL, &buffer);
+
+	HRESULT depthStencilResult = device->CreateDepthStencilView(buffer, NULL, &this->m_depthView);
 	buffer->Release();
 
 	if (FAILED(hr))
@@ -66,4 +87,14 @@ bool SwapChain::present(bool vsync)
 
 SwapChain::~SwapChain()
 {
+}
+
+ID3D11RenderTargetView* SwapChain::getRenderTargetView()
+{
+	return m_rtv;
+}
+
+ID3D11DepthStencilView* SwapChain::getDepthStencilView()
+{
+	return m_depthView;
 }

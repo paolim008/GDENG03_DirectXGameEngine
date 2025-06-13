@@ -57,6 +57,7 @@ public:
 private:
 	double currentTimeScale = 1.0f;
 	bool isIncreasing = true;
+	ConstantBuffer* m_cb;
 
 private:
 	float m_delta_pos;

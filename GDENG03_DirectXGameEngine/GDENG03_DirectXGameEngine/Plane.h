@@ -38,7 +38,7 @@ private:
 	float ticks = 0.0f;
 	float deltaTime = 0.0f;
 	float deltaScale = 1.0f;
-	float speed = 10.0f;
+	float speed = 100.0f;
 
 private:
 	bool isKeyDown = false;
