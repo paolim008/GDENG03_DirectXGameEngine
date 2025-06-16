@@ -8,6 +8,7 @@
 #include "InputSystem.h"
 #include "Plane.h"
 #include "RasterizerStateManager.h"
+#include "SceneCameraHandler.h"
 
 struct vertex
 {
@@ -128,6 +129,8 @@ void AppWindow::onCreate()
 
 	EngineTime::initialize();
 	EngineTime::setTimeScale(1.f);
+
+	SceneCameraHandler::initialize();
 
 	GraphicsEngine::get()->init();
 	m_swap_chain = GraphicsEngine::get()->createSwapChain();
@@ -259,6 +262,7 @@ void AppWindow::onUpdate()
 
 	InputSystem::get()->update();
 
+	SceneCameraHandler::get()->update();
 #pragma region Setup Cube Rendering
 
 	double deltaTime = EngineTime::getDeltaTime();

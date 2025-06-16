@@ -6,6 +6,7 @@
 #include "EngineTime.h"
 #include "GraphicsEngine.h"
 #include "InputSystem.h"
+#include "SceneCameraHandler.h"
 
 Cube::Cube(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(name)
 {
@@ -125,7 +126,11 @@ void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* 
 	allMatrix *= temp;
 
 	this->cbData.worldMatrix = allMatrix;
-	this->cbData.viewMatrix.setIdentity();
+
+	Matrix4x4 cameraMatrix = SceneCameraHandler::get()->getSceneCameraViewMatrix();
+	this->cbData.viewMatrix = cameraMatrix;
+
+
 	this->cbData.projMatrix.setOrthoLH(width / 400, height / 400, -4.0f, 4.0f);
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(vertexShader, this->constantBuffer);
