@@ -1,10 +1,12 @@
 #include "Camera.h"
 
+#include <iostream>
+
 #include "InputSystem.h"
 
 Camera::Camera(std::string name): AGameObject(name)
 {
-	this->setPosition(0.0f, 0.0f, -4.0f);
+	this->setPosition(0.f, 0.f, -4.0f);
 	this->updateViewMatrix();
 	InputSystem::get()->addListener(this);
 }
@@ -55,7 +57,7 @@ void Camera::draw(int width, int height, VertexShader* vertexShader, PixelShader
 
 void Camera::onKeyDown(int key)
 {
-	Vector3D localPos = this->getLocalPosition();
+	/*Vector3D localPos = this->getLocalPosition();
 	float x = localPos.m_x;
 	float y = localPos.m_y;
 	float z = localPos.m_z;
@@ -67,24 +69,24 @@ void Camera::onKeyDown(int key)
 		this->setPosition(x,y,z);
 		this->updateViewMatrix();
 	}
-	if (key == 'S')
+	else if (key == 'S')
 	{
 		z -= deltaTime * moveSpeed;
 		this->setPosition(x, y, z);
 		this->updateViewMatrix();
 	}
-	if (key == 'A')
+	else if (key == 'A')
 	{
 		x += deltaTime * moveSpeed;
 		this->setPosition(x, y, z);
 		this->updateViewMatrix();
 	}
-	if (key == 'D')
+	else if (key == 'D')
 	{
 		x -= deltaTime * moveSpeed;
 		this->setPosition(x, y, z);
 		this->updateViewMatrix();
-	}
+	}*/
 }
 
 void Camera::onKeyUp(int key)
@@ -100,12 +102,14 @@ void Camera::onMouseMove(const Point& deltaPos)
 		float y = localRot.m_y;
 		float z = localRot.m_z;
 
-		float speed = 0.005f;
+		float speed = 1.0f;
 		x += deltaPos.m_y * speed;
 		y += deltaPos.m_x * speed;
 
 		this->setRotation(x, y, z);
 		this->updateViewMatrix();
+
+		std::cout << deltaPos.m_x << deltaPos.m_y << std::endl;
 	}
 }
 
@@ -116,6 +120,7 @@ void Camera::onLeftMouseDown(const Point& mouse_pos)
 void Camera::onRightMouseDown(const Point& mouse_pos)
 {
 	this->mouseDown = true;
+	std::cout << "rightClick" << std::endl;
 }
 
 void Camera::onLeftMouseUp(const Point& mouse_pos)

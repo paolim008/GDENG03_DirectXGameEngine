@@ -6,6 +6,7 @@
 #include "EngineTime.h"
 #include "GraphicsEngine.h"
 #include "InputSystem.h"
+#include "SceneCameraHandler.h"
 
 Plane::Plane(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(name)
 {
@@ -62,7 +63,7 @@ Plane::Plane(string name, void* shaderByteCode, size_t sizeShader) : AGameObject
 	this->constantBuffer = GraphicsEngine::get()->createConstantBuffer();
 	this->constantBuffer->load(&cbData, sizeof(CBData));
 
-	cout << "Spawned Cube" << endl;
+	cout << "Spawned Plane" << endl;
 }
 
 Plane::~Plane()
@@ -74,11 +75,11 @@ void Plane::update(float deltaTime)
 {
 	this->cbData.time = EngineTime::getDeltaTime();
 
-	Matrix4x4 temp;
-
-	this->deltaScale += deltaTime * this->speed;
-
-	this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
+	// Matrix4x4 temp;
+	//
+	// this->deltaScale += deltaTime * this->speed;
+	//
+	// this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
 
 	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
 }
@@ -116,8 +117,14 @@ void Plane::draw(int width, int height, VertexShader* vertexShader, PixelShader*
 	allMatrix *= temp;
 
 	this->cbData.worldMatrix = allMatrix;
-	this->cbData.viewMatrix.setIdentity();
-	this->cbData.projMatrix.setOrthoLH(width / 400, height / 400, -4.0f, 4.0f);
+
+	Matrix4x4 cameraMatrix = SceneCameraHandler::get()->getSceneCameraViewMatrix();
+	this->cbData.viewMatrix = cameraMatrix;
+
+	float aspectRatio = (float)width / (float)height;
+	this->cbData.projMatrix.setPerspectiveFovLH(aspectRatio, aspectRatio, 0.0f, 1000.0f);
+
+	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(vertexShader, this->constantBuffer);
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(pixelShader, this->constantBuffer);
@@ -138,7 +145,70 @@ void Plane::setAnimSpeed(float speed)
 
 void Plane::onKeyDown(int key)
 {
+	//return;
 	if (key == 'W')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0, 0.1));
+	}
+	if (key == 'S')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0, -0.1));
+	}
+	if (key == 'D')
+	{
+		this->setRotation(localRotation + Vector3D(0.1, 0, 0));
+	}
+	if (key == 'A')
+	{
+		this->setRotation(localRotation + Vector3D(-0.1, 0, 0));
+	}
+	if (key == 'Q')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0.1, 0));
+	}
+	if (key == 'E')
+	{
+		this->setRotation(localRotation + Vector3D(0, -0.1, 0));
+	}
+	if (key == 'O')
+	{
+		this->setRotation(0, 0, 0);
+	}
+	cout << name << " X: " << localRotation.m_x * 60 << endl;
+	cout << name << " Y: " << localRotation.m_y * 60 << endl;
+	cout << name << " Z: " << localRotation.m_z * 60 << endl;
+
+	return;
+	
+	if (key == 'W')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0, 0.1));
+	}
+	if (key == 'S')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0, -0.1));
+	}
+	if (key == 'D')
+	{
+		this->setPosition(localPosition + Vector3D(0.1, 0, 0));
+	}
+	if (key == 'A')
+	{
+		this->setPosition(localPosition + Vector3D(-0.1, 0, 0));
+	}
+	if (key == 'Q')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0.1, 0));
+	}
+	if (key == 'E')
+	{
+		this->setPosition(localPosition + Vector3D(0, -0.1, 0));
+	}
+	cout << "X: " << localPosition.m_x << endl;
+	cout << "Y: " << localPosition.m_y << endl;
+	cout << "Z: " << localPosition.m_z << endl;
+
+	/*if (key == 'W')
 	{
 		this->ticks += deltaTime;
 		float rotSpeed = this->ticks * this->speed;
@@ -155,7 +225,7 @@ void Plane::onKeyDown(int key)
 		float rotSpeed = this->ticks * this->speed;
 		this->setRotation(rotSpeed, rotSpeed, rotSpeed);
 
-	}
+	}*/
 }
 
 void Plane::onKeyUp(int key)

@@ -1,6 +1,8 @@
 #include "SceneCameraHandler.h"
 #include "EngineTime.h"
 
+SceneCameraHandler* SceneCameraHandler::sharedInstance = nullptr;
+
 SceneCameraHandler* SceneCameraHandler::get()
 {
 	return sharedInstance;

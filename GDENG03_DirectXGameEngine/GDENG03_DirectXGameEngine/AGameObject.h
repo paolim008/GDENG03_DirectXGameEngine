@@ -26,6 +26,8 @@ public:
 
 	void setRotation(float x, float y, float z);
 	void setRotation(Vector3D rotation);
+	void setRotationEuler(float x, float y, float z);
+	void setRotationEuler(Vector3D rotation);
 	Vector3D getLocalRotation();
 
 	std::string getName();

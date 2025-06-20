@@ -42,11 +42,8 @@ private:
 
 private:
 	SwapChain* m_swap_chain;
-	//VertexBuffer* m_vb;
-	//IndexBuffer* m_ib;
 	VertexShader* m_vs;
 	PixelShader* m_ps;
-	//ConstantBuffer* m_cb;
 
 	float m_angle = 0;
 
@@ -73,6 +70,8 @@ private:
 
 private:
 	vector<AGameObject*> m_gameObjectList;
+
+	AGameObject* getGameObject(string objectName);
 
 };
 

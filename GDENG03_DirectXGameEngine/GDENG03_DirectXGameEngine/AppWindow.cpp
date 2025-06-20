@@ -125,7 +125,7 @@ void AppWindow::onCreate()
 	Window::onCreate();
 
 	InputSystem::get()->addListener(this);
-	InputSystem::get()->showCursor(false);
+	InputSystem::get()->showCursor(true);
 
 	EngineTime::initialize();
 	EngineTime::setTimeScale(1.f);
@@ -138,100 +138,90 @@ void AppWindow::onCreate()
 	RECT rc = this->getClientWindowRect();
 	m_swap_chain->init(this->m_hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
-	m_world_cam.setTranslation(Vector3D(0, 0, -2));
+
+
+	m_world_cam.setTranslation(Vector3D(0, 0, -10));
 
 	this->rasterizerStateManager = new RasterizerStateManager();
 	rasterizerStateManager->InitializeStates();
 
-	/*vertex vertex_list[] =
-	{
-		//X - Y - Z
-
-		//FRONT FACE
-		{Vector3D(-0.5f,-0.5f,-0.5f),  Vector3D(1,0,1),  Vector3D(0,1,0)}, // POS1
-		{Vector3D(-0.5f,0.5f,-0.5f), Vector3D(1,0,0),  Vector3D(0,1,1)}, // POS2
-		{ Vector3D(0.5f,0.5f,-0.5f),Vector3D(0,1,1),  Vector3D(1,0,0)},// POS2
-		{ Vector3D(0.5f,-0.5f,-0.5f), Vector3D(1,1,0),  Vector3D(0,0,1)}, //POS4
-
-		//BACK FACE
-		{Vector3D(0.5f,-0.5f,0.5f),  Vector3D(1,0,1),  Vector3D(0,1,0)}, // POS1
-		{Vector3D(0.5f,0.5f,0.5f), Vector3D(1,0,0),  Vector3D(0,1,1)}, // POS2
-		{ Vector3D(-0.5f,0.5f,0.5f),Vector3D(0,1,1),  Vector3D(1,0,0)},// POS2
-		{ Vector3D(-0.5f,-0.5f,0.5f), Vector3D(1,1,0),  Vector3D(0,0,1)} //POS4
-	};*/
-
-	// m_vb = GraphicsEngine::get()->createVertexBuffer();
-	// UINT size_list = ARRAYSIZE(vertex_list);
-
-	/*unsigned int index_list[] =
-	{
-		//FRONT SIDE
-		0,1,2,
-		2,3,0,
-		//BACK SIDE
-		4,5,6,
-		6,7,4,
-		//TOP SIDE
-		1,6,5,
-		5,2,1,
-		//BOTTOM SIDE
-		7,0,3,
-		3,4,7,
-		//RIGHT SIDE
-		3,2,5,
-		5,4,3,
-		//LEFT SIDE
-		7,6,1,
-		1,0,7,
-	};
-
-	m_ib = GraphicsEngine::get()->createIndexBuffer();
-	UINT size_index_list = ARRAYSIZE(index_list);
-
-	m_ib->load(index_list, size_index_list); 
-	*/
 	void* shader_byte_code = nullptr;
 	size_t size_shader = 0;
 	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "vsmain", &shader_byte_code, &size_shader);
 	m_vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, size_shader);
 
-	/*for (int i = 0; i < 5; i++)
-	{
-		Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
-		cube->setAnimSpeed(0.f);
-		cube->setPosition(i*0.2, 0, 0);
-		cube->setScale(Vector3D(.1, .1, .1));
-		cube->setRotation(0, 0, 0);
-		cube->setAnimSpeed(1.f);
-		this->m_gameObjectList.push_back(cube);
-		cout << "Cube Created: " << i << endl;
 
-		Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
-		plane->setAnimSpeed(0.f);
-		plane->setPosition(i*0.2, 0, 0);
-		plane->setScale(Vector3D(.1, .1, .1));
+	// Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
+	// plane->setPosition(0, 0, -2.9);
+	// plane->setScale(Vector3D(1, 1, 1));
+	// plane->setRotation(1.2, 0, 0.5);
+	// plane->setAnimSpeed(1.f);
+	// this->m_gameObjectList.push_back(plane);
+	
+	// Cube* cube = new Cube("Cube1", shader_byte_code, size_shader);
+	// cube->setPosition(.6,.6,6.6);
+	// cube->setScale(Vector3D(1, 1, 1));
+	// cube->setRotation(-0.44, 1.07,0);
+	// cube->setAnimSpeed(1.f);
+	// this->m_gameObjectList.push_back(cube);
+
+	for (int i = 0; i<15; i++)
+	{
+		string objectName = "Plane" + std::to_string(i);
+		Plane* plane = new Plane(objectName, shader_byte_code, size_shader);
+		//plane->setPosition(0, 0, 0);
+		plane->setScale(Vector3D(.5, 1, 1));
 		plane->setRotation(0, 0, 0);
 		plane->setAnimSpeed(1.f);
 		this->m_gameObjectList.push_back(plane);
-		cout << "Plane Created: " << i << endl;
-	}*/
+	}
 
+	Vector3D offset(.4, -.15, 0);
 
-	Cube* cube = new Cube("Cube", shader_byte_code, size_shader);
-	cube->setAnimSpeed(0.f);
-	cube->setPosition(0, 0, 0);
-	cube->setScale(Vector3D(.1, .1, .1));
-	cube->setRotation(45, 45, 0);
-	cube->setAnimSpeed(1.f);
-	this->m_gameObjectList.push_back(cube);
+	getGameObject("Plane0")->setPosition(0,0,0);
+	getGameObject("Plane0")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane1")->setPosition(.25,0,0);
+	getGameObject("Plane1")->setRotationEuler(13.5, -56, 12);
 
-	Plane* plane = new Plane("Plane", shader_byte_code, size_shader);
-	plane->setAnimSpeed(0.f);
-	plane->setPosition(0, 0, 0);
-	plane->setScale(Vector3D(.1, .1, .1));
-	plane->setRotation(0, 0, 0);
-	plane->setAnimSpeed(1.f);
-	this->m_gameObjectList.push_back(plane);
+	getGameObject("Plane2")->setPosition(offset.m_x * 1,1 * offset.m_y,0);
+	getGameObject("Plane2")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane3")->setPosition(offset.m_x * 1 + .25f,1 * offset.m_y,0);
+	getGameObject("Plane3")->setRotationEuler(13.5, -56, 12);
+
+	getGameObject("Plane4")->setPosition(offset.m_x * 2,2 * offset.m_y,0);
+	getGameObject("Plane4")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane5")->setPosition(offset.m_x * 2 + .25f,2 * offset.m_y,0);
+	getGameObject("Plane5")->setRotationEuler(13.5, -56, 12);
+
+	//HORIZONTAL
+	getGameObject("Plane6")->setPosition(.20f,.45f,0);
+	getGameObject("Plane6")->setRotationEuler(72,-6,60);
+	//HORIZONTAL
+	getGameObject("Plane7")->setPosition(.60f,.35f,0);
+	getGameObject("Plane7")->setRotationEuler(72,-6,60);
+
+	offset = Vector3D(.2, -.15, 0);
+
+	getGameObject("Plane8")->setPosition(offset.m_x * 1, -6 * offset.m_y, 0);
+	getGameObject("Plane8")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane9")->setPosition(offset.m_x * 1 + .25f, -6 * offset.m_y, 0);
+	getGameObject("Plane9")->setRotationEuler(13.5, -56, 12);
+	
+	getGameObject("Plane10")->setPosition(offset.m_x + .5f, -5 * offset.m_y, 0);
+	getGameObject("Plane10")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane11")->setPosition(offset.m_x + .75f, -5 * offset.m_y, 0);
+	getGameObject("Plane11")->setRotationEuler(13.5, -56, 12);
+
+	//HORIZONTAL
+	getGameObject("Plane12")->setPosition(.20f + .25f, 1.45f, 0);
+	getGameObject("Plane12")->setRotationEuler(72, -6, 60);
+
+	offset = Vector3D(.2, -4 * -.50, 0);
+
+	getGameObject("Plane13")->setPosition(offset.m_x + .2f, offset.m_y - .1f, 0);
+	getGameObject("Plane13")->setRotation(-.5, -1, -.5);
+	getGameObject("Plane14")->setPosition(offset.m_x + .45f, offset.m_y - .1f, 0);
+	getGameObject("Plane14")->setRotationEuler(13.5, -56, 12);
 
 
 
@@ -256,8 +246,6 @@ void AppWindow::onUpdate()
 {
 	EngineTime::LogFrameStart();
 
-	//InterpolateTimeScale();
-
 	Window::onUpdate();
 
 	InputSystem::get()->update();
@@ -266,10 +254,6 @@ void AppWindow::onUpdate()
 #pragma region Setup Cube Rendering
 
 	double deltaTime = EngineTime::getDeltaTime();
-
-	//SET DEFAULT SHADER IN THE GRAPHICS PIPELINE TO BE ABLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(m_vs);
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(m_ps);
 	
 	//CLEAR THE RENDER TARGET 
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(this->m_swap_chain,
@@ -282,23 +266,9 @@ void AppWindow::onUpdate()
 	RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(width, height);
 
-	//update();
-
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_vs, m_cb);
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(m_ps, m_cb);
-	//
-	//
-	// //SET THE VERTICES OF THE TRIANGLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(m_vb);
-	//
-	// //SET THE INDICES OF THE TRIANGLE TO DRAW
-	// GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(m_ib);
-	//
 
 #pragma endregion Setup Cube Rendering
 
-	// FINALLY DRAW THE TRIANGLE
-//	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(m_ib->getSizeIndexList(), 0, 0);
 
 	for (int i = 0; i < m_gameObjectList.size(); i++)
 	{
@@ -306,19 +276,13 @@ void AppWindow::onUpdate()
 		m_gameObjectList[i]->draw(width, height, this->m_vs, this->m_ps);
 	}
 	m_swap_chain->present(true);
-
-	//rasterizerStateManager->update();
-
-	
+		
 	EngineTime::LogFrameEnd();
 } 
 
 void AppWindow::onDestroy()
 {
 	Window::onDestroy();
-	//m_vb->release();
-	//m_ib->release();
-	//m_cb->release();
 	m_swap_chain->release();
 	m_vs->release();
 	m_ps->release();
@@ -357,31 +321,21 @@ void AppWindow::InterpolateTimeScale()
 	EngineTime::setTimeScale(currentTimeScale);
 }
 
+AGameObject* AppWindow::getGameObject(string objectName)
+{
+	for (AGameObject* gameObject : m_gameObjectList)
+	{
+		if (gameObject->getName() == objectName)
+		{
+			cout << "Found Object: " << objectName << endl;
+			return gameObject;
+		}
+	}
+	cout << "Could not find Object: " << objectName << endl;
+}
+
 void AppWindow::onKeyDown(int key)
 {
-	float rotationSpeed = 10.0f;
-	if (key == 'W')
-	{
-		m_forward = 1.0f;
-		//m_rot_x += rotationSpeed * EngineTime::getDeltaTime();
-	}
-	else if (key == 'S')
-	{
-		m_forward = -1.0f;
-		//m_rot_x -= rotationSpeed * EngineTime::getDeltaTime();
-	}
-	else if (key == 'A')
-	{
-		m_rightward = -1.0f;
-
-		//m_rot_y += rotationSpeed * EngineTime::getDeltaTime();
-	}
-	else if (key == 'D')
-	{
-		m_rightward = 1.0f;
-
-		//m_rot_y -= rotationSpeed * EngineTime::getDeltaTime();
-	}
 
 }
 
@@ -398,13 +352,13 @@ void AppWindow::onKeyUp(int key)
 
 void AppWindow::onMouseMove(const Point& mouse_pos)
 {
-	float engineDeltaTime = EngineTime::getDeltaTime();
-
-	int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
-	int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
-
-	m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * engineDeltaTime;
-	m_rot_y += (mouse_pos.m_x - (width / 2.0f))* engineDeltaTime;
+	// float engineDeltaTime = EngineTime::getDeltaTime();
+	//
+	// int width = (this->getClientWindowRect().right - this->getClientWindowRect().left);
+	// int height = (this->getClientWindowRect().bottom - this->getClientWindowRect().top);
+	//
+	// m_rot_x += (mouse_pos.m_y - (height / 2.0f)) * engineDeltaTime;
+	// m_rot_y += (mouse_pos.m_x - (width / 2.0f))* engineDeltaTime;
 
 	//InputSystem::get()->setCursorPosition(Point(width / 2.0f, height / 2.0f));
 }

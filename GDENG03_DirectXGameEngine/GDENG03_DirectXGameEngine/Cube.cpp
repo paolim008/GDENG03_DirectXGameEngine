@@ -16,17 +16,30 @@ Cube::Cube(string name, void* shaderByteCode, size_t sizeShader) : AGameObject(n
 
 	Vertex quadlist[] = {
 
+		
 		//FRONT FACE
-		{Vector3D(-0.5f,-0.5f,-0.5f),    Vector3D(1,0.2,1),  Vector3D(0.2,1,1) },
-		{Vector3D(-0.5f,0.5f,-0.5f),    Vector3D(1,0.5,0.2), Vector3D(0.2,1,1) },
-		{ Vector3D(0.5f,0.5f,-0.5f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
-		{ Vector3D(0.5f,-0.5f,-0.5f),     Vector3D(1,0,0.2), Vector3D(0.2,0.3,1) },
+		{Vector3D(-0.5f,-0.5f,-0.5f),Vector3D(1,0,0),  Vector3D(1,0,0) },
+		{Vector3D(-0.5f,0.5f,-0.5f),Vector3D(0,1,0), Vector3D(0,1,0) },
+		{ Vector3D(0.5f,0.5f,-0.5f),Vector3D(0,0,1),  Vector3D(0,0,1) },
+		{ Vector3D(0.5f,-0.5f,-0.5f),Vector3D(1,1,1), Vector3D(1,1,0) },
 
 		//BACK FACE
-		{ Vector3D(0.5f,-0.5f,0.5f),    Vector3D(1,1,0.2), Vector3D(0.2,1,1), },
-		{ Vector3D(0.5f,0.5f,0.5f),    Vector3D(1,0.5,0.2), Vector3D(0.2,0,1) },
-		{ Vector3D(-0.5f,0.5f,0.5f),   Vector3D(1,0.3,0.2),  Vector3D(0.2,0.3,1) },
-		{ Vector3D(-0.5f,-0.5f,0.5f),     Vector3D(1,0,0.2),  Vector3D(0.2,0.5,1) }
+		{ Vector3D(0.5f,-0.5f,0.5f),Vector3D(1,0,0), Vector3D(1,0,0), },
+		{ Vector3D(0.5f,0.5f,0.5f),  Vector3D(0,1,0), Vector3D(0,1,0) },
+		{ Vector3D(-0.5f,0.5f,0.5f), Vector3D(0,0,1),  Vector3D(0,0,1) },
+		{ Vector3D(-0.5f,-0.5f,0.5f), Vector3D(1,1,0),  Vector3D(1,1,0) }
+
+		// //FRONT FACE
+		// {Vector3D(-0.5f,-0.5f,-0.5f),Vector3D(1,1,1),  Vector3D(1,1,1) },
+		// {Vector3D(-0.5f,0.5f,-0.5f),Vector3D(1,1,1), Vector3D(1,1,1) },
+		// { Vector3D(0.5f,0.5f,-0.5f),Vector3D(1,1,1),  Vector3D(1,1,1) },
+		// { Vector3D(0.5f,-0.5f,-0.5f),Vector3D(1,1,1), Vector3D(1,1,1) },
+		//
+		// //BACK FACE
+		// { Vector3D(0.5f,-0.5f,0.5f),Vector3D(1,1,1), Vector3D(1,1,1), },
+		// { Vector3D(0.5f,0.5f,0.5f),  Vector3D(1,1,1), Vector3D(1,1,1) },
+		// { Vector3D(-0.5f,0.5f,0.5f), Vector3D(1,1,1),  Vector3D(1,1,1) },
+		// { Vector3D(-0.5f,-0.5f,0.5f), Vector3D(1,1,1),  Vector3D(1,1,1) }
 
 	};
 
@@ -91,6 +104,21 @@ void Cube::update(float deltaTime)
 	//this->setRotation(this->deltaScale, this->deltaScale, this->deltaScale);
 
 	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
+
+
+	//this->ticks += deltaTime;
+
+	//float rotSpeed = this->ticks * this->speed * 50;
+	//this->setRotation(rotSpeed, rotSpeed, rotSpeed);
+	//
+	// if (localScale.m_x > 40.f) return;
+	//
+	//
+	// float scaleSpeed = this->ticks * this->speed/2;
+	// this->setScale(localScale.m_x + scaleSpeed, localScale.m_y + scaleSpeed, 1.f);
+
+
+
 }
 
 
@@ -130,8 +158,10 @@ void Cube::draw(int width, int height, VertexShader* vertexShader, PixelShader* 
 	Matrix4x4 cameraMatrix = SceneCameraHandler::get()->getSceneCameraViewMatrix();
 	this->cbData.viewMatrix = cameraMatrix;
 
+	float aspectRatio = (float)width / (float)height;
+	this->cbData.projMatrix.setPerspectiveFovLH(aspectRatio, aspectRatio, 0.0f, 1000.0f);
 
-	this->cbData.projMatrix.setOrthoLH(width / 400, height / 400, -4.0f, 4.0f);
+	this->constantBuffer->update(GraphicsEngine::get()->getImmediateDeviceContext(), &this->cbData);
 
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(vertexShader, this->constantBuffer);
 	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(pixelShader, this->constantBuffer);
@@ -152,7 +182,67 @@ void Cube::setAnimSpeed(float speed)
 
 void Cube::onKeyDown(int key)
 {
+	return;
+	/*
 	if (key == 'W')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0, 0.01));
+	}
+	if (key == 'S')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0, -0.01));
+	}
+	if (key == 'D')
+	{
+		this->setRotation(localRotation + Vector3D(0.01, 0, 0));
+	}
+	if (key == 'A')
+	{
+		this->setRotation(localRotation + Vector3D(-0.01, 0, 0));
+	}
+	if (key == 'Q')
+	{
+		this->setRotation(localRotation + Vector3D(0, 0.01, 0));
+	}
+	if (key == 'E')
+	{
+		this->setRotation(localRotation + Vector3D(0, -0.01, 0));
+	}
+	cout << "X: " << localRotation.m_x << endl;
+	cout << "Y: " << localRotation.m_y << endl;
+	cout << "Z: " << localRotation.m_z << endl;
+
+	return;*/
+
+	if (key == 'W')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0, 0.2));
+	}
+	if (key == 'S')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0, -0.2));
+	}
+	if (key == 'D')
+	{
+		this->setPosition(localPosition + Vector3D(0.2, 0, 0));
+	}
+	if (key == 'A')
+	{
+		this->setPosition(localPosition + Vector3D(-0.2, 0, 0));
+	}
+	if (key == 'Q')
+	{
+		this->setPosition(localPosition + Vector3D(0, 0.2, 0));
+	}
+	if (key == 'E')
+	{
+		this->setPosition(localPosition + Vector3D(0, -0.2, 0));
+	}
+	cout << "X: " << localPosition.m_x << endl;
+	cout << "Y: " << localPosition.m_y << endl;
+	cout << "Z: " << localPosition.m_z << endl;
+
+	/*if (key == 'W')
 	{
 		this->ticks += deltaTime;
 		float rotSpeed = this->ticks * this->speed;
@@ -169,7 +259,8 @@ void Cube::onKeyDown(int key)
 		float rotSpeed = this->ticks * this->speed;
 		this->setRotation(rotSpeed, rotSpeed, rotSpeed);
 
-	}
+	}*/
+
 }
 
 void Cube::onKeyUp(int key)

@@ -53,6 +53,18 @@ void AGameObject::setRotation(Vector3D rotation)
 	localRotation = rotation;
 }
 
+void AGameObject::setRotationEuler(float x, float y, float z)
+{
+	localRotation = Vector3D(x / 60, y / 60, z / 60);
+}
+
+void AGameObject::setRotationEuler(Vector3D rotation)
+{
+	Vector3D newRotation = rotation * 0.6;
+
+	localRotation = newRotation;
+}
+
 Vector3D AGameObject::getLocalRotation()
 {
 	return this->localRotation;
